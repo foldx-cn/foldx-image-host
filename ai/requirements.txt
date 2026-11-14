@@ -1,0 +1,6 @@
+# Python 3.10+，CPU 即可运行；不需要 GPU。
+numpy>=1.24
+Pillow>=10.0
+onnxruntime>=1.17
+nudenet>=3.4
+tokenizers>=0.19
