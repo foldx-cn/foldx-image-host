@@ -1,0 +1,20 @@
+[Unit]
+Description=Foldx image host local vision moderation (CLIP + NudeNet)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/opt/foldx-ai
+Environment=FOLDX_AI_MODEL_DIR=/opt/foldx-ai/models
+Environment=FOLDX_AI_PORT=8791
+ExecStart=/usr/bin/python3 /opt/foldx-ai/moderator.py
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/opt/foldx-ai
+
+[Install]
+WantedBy=multi-user.target
