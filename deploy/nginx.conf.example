@@ -1,0 +1,55 @@
+server {
+    listen 80;
+    listen [::]:80;
+    server_name img.example.com;
+    root /www/wwwroot/img.example.com;
+    location ^~ /.well-known/acme-challenge/ { root /www/wwwroot/img.example.com; }
+    location / { return 301 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl http2;
+    server_name img.example.com;
+    root /www/wwwroot/img.example.com;
+    index index.php index.html;
+    client_max_body_size 25m;
+
+    ssl_certificate /path/to/fullchain.pem;
+    ssl_certificate_key /path/to/privkey.pem;
+
+    location /config/ { deny all; }
+    location ~ /\.(?!well-known) { deny all; }
+
+    location / { try_files $uri $uri/ /index.php?$query_string; }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param QUERY_STRING $query_string;
+        fastcgi_param REQUEST_METHOD $request_method;
+        fastcgi_param CONTENT_TYPE $content_type;
+        fastcgi_param CONTENT_LENGTH $content_length;
+        fastcgi_param REQUEST_URI $request_uri;
+        fastcgi_param DOCUMENT_URI $document_uri;
+        fastcgi_param DOCUMENT_ROOT $document_root;
+        fastcgi_param SERVER_PROTOCOL $server_protocol;
+        fastcgi_param REQUEST_SCHEME $scheme;
+        fastcgi_param HTTPS $https if_not_empty;
+        fastcgi_param GATEWAY_INTERFACE CGI/1.1;
+        fastcgi_param SERVER_SOFTWARE nginx/$nginx_version;
+        fastcgi_param REMOTE_ADDR $remote_addr;
+        fastcgi_param REMOTE_PORT $remote_port;
+        fastcgi_param SERVER_ADDR $server_addr;
+        fastcgi_param SERVER_PORT $server_port;
+        fastcgi_param SERVER_NAME $server_name;
+        fastcgi_param REDIRECT_STATUS 200;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf)$ {
+        expires 30d;
+        access_log off;
+        try_files $uri =404;
+    }
+}
