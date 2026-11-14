@@ -1,0 +1,14 @@
+config.php
+images.sqlite
+images.sqlite-shm
+images.sqlite-wal
+i/
+thumbs/
+assets/bg/*
+!assets/bg/README.md
+ai/models/*.onnx
+ai/models/tokenizer.json
+ai/models/*.json
+__pycache__/
+*.pyc
+.DS_Store
